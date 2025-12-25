@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Grillada - Saveurs Authentiques</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Toastify pour les notifications (Liens corrigés et fiables) -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.js"></script>
+    
+    <!-- AOS Animation Library (Pour l'effet d'apparition au défilement) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;500&display=swap');
+
+        :root {
+            --primary: #d35400; /* Orange brûlé grillade */
+            --dark: #1a1a1a;
+            --light: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden; /* Empêche le défilement horizontal dû aux animations */
+        }
+
+        h1, h2, h3 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .serif-italic {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+        }
+
+        html { scroll-behavior: smooth; }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+        .price-tag {
+            color: var(--primary);
+            font-weight: bold;
+            font-family: 'Oswald', sans-serif;
+        }
+        
+        .add-btn {
+            background-color: #333;
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 10px;
+            border: 1px solid #444;
+        }
+        
+        .add-btn:active {
+            transform: scale(0.9);
+            background-color: var(--primary);
+        }
+
+        .social-icon:hover { transform: scale(1.1); transition: transform 0.2s; }
+        
+        /* Modal Panier */
+        #cart-modal {
+            backdrop-filter: blur(5px);
+        }
+    </style>
+</head>
+<body class="pb-24">
+
+    <!-- Navigation Flottante -->
+    <nav class="fixed top-0 left-0 w-full bg-black/90 backdrop-blur-md z-50 border-b border-gray-800 py-3 px-4 shadow-lg transition-all duration-300" id="navbar">
+        <div class="flex justify-between items-center max-w-4xl mx-auto">
+            <!-- LOGO NAVBAR -->
+            <img src="logo.jpg" 
+                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('nav-text').style.display='block';"
+                 alt="Grillada" 
+                 class="h-10 w-auto">
+            <span id="nav-text" class="hidden text-xl font-bold tracking-wider text-orange-500">GRILLADA</span>
+                 
+            <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-white p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+        <!-- Menu déroulant -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-zinc-900 border-b border-zinc-800 shadow-xl max-h-[80vh] overflow-y-auto">
+            <div class="flex flex-col p-4 space-y-3 text-center">
+                <a href="#petitdej" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Petit Déj & Brunch</a>
+                <a href="#salades" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Salades</a>
+                <a href="#clubs" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Clubs</a>
+                <a href="#burgers" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Snack</a>
+                <a href="#pizzas" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Pizzas</a>
+                <a href="#pates" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Pâtes</a>
+                <a href="#ocean" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Océan</a>
+                <a href="#volailles" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Volailles</a>
+                <a href="#viandes" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Viandes</a>
+                <a href="#kids" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Enfants</a>
+                <a href="#douceur" class="block py-2 hover:text-orange-500" onclick="closeMenu()">Douceur</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="relative h-[60vh] flex items-center justify-center overflow-hidden mt-12">
+        <img src="accueil.jpg" 
+             onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';"
+             class="absolute w-full h-full object-cover opacity-60" alt="Ambiance Grillada"
+             data-aos="zoom-out" data-aos-duration="2000">
+             
+        <div class="relative z-10 text-center px-4" data-aos="fade-up" data-aos-delay="300">
+            <!-- LOGO HERO -->
+            <img src="logo.jpg" 
+                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('backup-title').style.display='block';"
+                 alt="Grillada Logo" 
+                 class="w-48 md:w-64 mx-auto mb-6 drop-shadow-lg">
+            
+            <h1 id="backup-title" class="hidden text-5xl md:text-7xl font-bold mb-2 tracking-widest text-white drop-shadow-lg">GRILLADA</h1>
+            
+            <p class="serif-italic text-xl md:text-2xl text-orange-400 mb-8">Flammes authentiques, goûts inoubliables</p>
+            <a href="#menu-start" class="bg-orange-600 text-white px-8 py-3 rounded-full font-bold uppercase tracking-wide hover:bg-orange-700 transition shadow-lg animate-pulse">
+                Commander maintenant
+            </a>
+        </div>
+        <div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-[#1a1a1a] to-transparent"></div>
+    </header>
+
+    <div id="menu-start" class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+
+        <!-- 1. PETIT DEJEUNER & BRUNCH -->
+        <section id="petitdej" class="mb-16 scroll-mt-24 bg-zinc-800/50 p-6 rounded-2xl" data-aos="fade-up">
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Petit Dej -->
+                <div>
+                     <div class="flex items-center mb-6">
+                        <svg class="w-8 h-8 text-yellow-500 mr-3" fill="currentColor" viewBox="0 0 24 24"><path d="M4 19h16v2H4zm4-4h8v2H8zm-4-6h16v2H4zm4-4h8v2H8z"/></svg>
+                        <h2 class="text-2xl font-bold">Petit Déjeuner</h2>
+                    </div>
+                    <img src="petitdej.jpg" 
+                         onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1493770348161-369560ae357d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';"
+                         class="w-full h-32 object-cover rounded-lg mb-4" alt="Petit Déjeuner">
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-1"><span>Œuf au plat</span> <div class="flex items-center"><span class="price-tag mr-2">1.500</span><button class="add-btn" onclick="addToCart('Œuf au plat', 1500)">+</button></div></div>
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-1"><span>Omelette nature</span> <div class="flex items-center"><span class="price-tag mr-2">2.000</span><button class="add-btn" onclick="addToCart('Omelette nature', 2000)">+</button></div></div>
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-1"><span>Œufs brouillés</span> <div class="flex items-center"><span class="price-tag mr-2">2.500</span><button class="add-btn" onclick="addToCart('Œufs brouillés', 2500)">+</button></div></div>
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-1"><span>Omelette parisienne</span> <div class="flex items-center"><span class="price-tag mr-2">3.500</span><button class="add-btn" onclick="addToCart('Omelette parisienne', 3500)">+</button></div></div>
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-1"><span>Omelette végétarienne</span> <div class="flex items-center"><span class="price-tag mr-2">3.500</span><button class="add-btn" onclick="addToCart('Omelette végétarienne', 3500)">+</button></div></div>
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-1"><span>Omelette californienne</span> <div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Omelette californienne', 4500)">+</button></div></div>
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-1"><span>Omelette gourmande</span> <div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Omelette gourmande', 4500)">+</button></div></div>
+                    </div>
+                </div>
+
+                <!-- Brunch -->
+                <div>
+                    <div class="flex items-center mb-6">
+                        <svg class="w-8 h-8 text-orange-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <h2 class="text-2xl font-bold">Brunch</h2>
+                    </div>
+                    <div class="bg-zinc-700 p-4 rounded-lg border border-orange-500/30 relative" data-aos="flip-left" data-aos-delay="200">
+                        <h3 class="text-xl font-bold text-orange-400 mb-2">Formule Brunch</h3>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Variétés de pain, Mini brochettes de viande, Œufs brouillés, Assiette de fruits, Assiette de charcuterie et fromage, Viennoiseries, Jus d'orange, Pancakes, Thé, café ou lait.
+                        </p>
+                        <div class="flex justify-end items-center mt-2">
+                            <span class="text-2xl font-bold text-white mr-3">12.500 FCFA</span>
+                            <button class="add-btn bg-orange-500 hover:bg-orange-600" onclick="addToCart('Formule Brunch', 12500)">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SALADES & ENTREES -->
+        <section id="salades" class="mb-16 scroll-mt-24" data-aos="fade-up">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-1 bg-green-600 mr-4"></div>
+                <h2 class="text-3xl font-bold">Salades & Entrées</h2>
+            </div>
+            
+            <div class="mb-8 rounded-xl overflow-hidden shadow-2xl h-48 md:h-56 relative" data-aos="zoom-in">
+                 <img src="salade.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';" class="w-full h-full object-cover" alt="Salades">
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                     <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Classique niçoise</span><div class="flex items-center"><span class="price-tag mr-2">5.500</span><button class="add-btn" onclick="addToCart('Classique niçoise', 5500)">+</button></div></div>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Salade Grillada</span><div class="flex items-center"><span class="price-tag mr-2">7.500</span><button class="add-btn" onclick="addToCart('Salade Grillada', 7500)">+</button></div></div>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>L'unique Grillada</span><div class="flex items-center"><span class="price-tag mr-2">6.000</span><button class="add-btn" onclick="addToCart('L\'unique Grillada', 6000)">+</button></div></div>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Salade chèvre chaud</span><div class="flex items-center"><span class="price-tag mr-2">6.500</span><button class="add-btn" onclick="addToCart('Salade chèvre chaud', 6500)">+</button></div></div>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Assiette tapas</span><div class="flex items-center"><span class="price-tag mr-2">5.000</span><button class="add-btn" onclick="addToCart('Assiette tapas', 5000)">+</button></div></div>
+                </div>
+                <div class="space-y-4">
+                     <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Salade exotique</span><div class="flex items-center"><span class="price-tag mr-2">6.000</span><button class="add-btn" onclick="addToCart('Salade exotique', 6000)">+</button></div></div>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Salade mexicaine</span><div class="flex items-center"><span class="price-tag mr-2">6.500</span><button class="add-btn" onclick="addToCart('Salade mexicaine', 6500)">+</button></div></div>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Salade César gambas panées</span><div class="flex items-center"><span class="price-tag mr-2">7.000</span><button class="add-btn" onclick="addToCart('Salade César', 7000)">+</button></div></div>
+                    <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Salade saumon</span><div class="flex items-center"><span class="price-tag mr-2">8.500</span><button class="add-btn" onclick="addToCart('Salade saumon', 8500)">+</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CLUBS & CROQS -->
+        <section id="clubs" class="mb-16 scroll-mt-24" data-aos="fade-up">
+             <div class="flex items-center mb-6">
+                <div class="w-12 h-1 bg-pink-500 mr-4"></div>
+                <h2 class="text-3xl font-bold">Clubs & Croqs</h2>
+            </div>
+            <div class="mb-8 rounded-xl overflow-hidden shadow-2xl h-48 md:h-56 relative" data-aos="zoom-in">
+                 <img src="club.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1528735602780-2552fd46c7af?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';" class="w-full h-full object-cover" alt="Club Sandwich">
+            </div>
+            <div class="space-y-4">
+                 <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Croque-monsieur</span><div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Croque-monsieur', 4500)">+</button></div></div>
+                <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Clubs thon</span><div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Clubs thon', 4500)">+</button></div></div>
+                <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Clubs dinde</span><div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Clubs dinde', 4500)">+</button></div></div>
+                <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>Salmon clubs</span><div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Salmon clubs', 4500)">+</button></div></div>
+                <div class="flex justify-between items-center border-b border-gray-800 pb-1"><span>California chicken</span><div class="flex items-center"><span class="price-tag mr-2">5.500</span><button class="add-btn" onclick="addToCart('California chicken', 5500)">+</button></div></div>
+            </div>
+        </section>
+
+        <!-- 4. BURGERS & SNACK -->
+        <section id="burgers" class="mb-16 scroll-mt-24" data-aos="fade-up">
+            <div class="bg-zinc-800 p-6 rounded-2xl">
+                <div class="flex items-center mb-6">
+                    <svg class="w-8 h-8 text-orange-500 mr-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                    <h2 class="text-3xl font-bold">Burgers & Snack</h2>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mb-6 h-40">
+                    <img src="burger.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" class="w-full h-full object-cover rounded-l-lg" alt="Burger">
+                    <img src="tacos.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" class="w-full h-full object-cover rounded-r-lg" alt="Tacos">
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                     <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold">CHAKALA Burger</span></div><div class="flex items-center"><span class="price-tag mr-2">10.000</span><button class="add-btn" onclick="addToCart('CHAKALA Burger', 10000)">+</button></div></div>
+                    <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold">Barbecue Burger</span></div><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Barbecue Burger', 10500)">+</button></div></div>
+                    <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold text-orange-400">GRILLADA Burger</span></div><div class="flex items-center"><span class="price-tag mr-2">13.000</span><button class="add-btn" onclick="addToCart('GRILLADA Burger', 13000)">+</button></div></div>
+                     <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold">Tacos Americano</span><span class="text-xs text-gray-400">Poulet ou Viande</span></div><div class="flex items-center"><span class="price-tag mr-2">11.000</span><button class="add-btn" onclick="addToCart('Tacos Americano', 11000)">+</button></div></div>
+                    <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold">Crêpes Salées</span><span class="text-xs text-gray-400">Poulet ou Viande</span></div><div class="flex items-center"><span class="price-tag mr-2">9.500</span><button class="add-btn" onclick="addToCart('Crêpes Salées', 9500)">+</button></div></div>
+                    <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold">Assiette Chawarma Poulet</span></div><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Assiette Chawarma Poulet', 10500)">+</button></div></div>
+                    <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold">Assiette Chawarma Viande</span></div><div class="flex items-center"><span class="price-tag mr-2">11.500</span><button class="add-btn" onclick="addToCart('Assiette Chawarma Viande', 11500)">+</button></div></div>
+                     <div class="flex justify-between items-center bg-zinc-700/50 p-3 rounded-lg"><div><span class="block font-bold">Assiette Chawarma Mix</span></div><div class="flex items-center"><span class="price-tag mr-2">13.000</span><button class="add-btn" onclick="addToCart('Assiette Chawarma Mix', 13000)">+</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. PIZZAS -->
+        <section id="pizzas" class="mb-16 scroll-mt-24" data-aos="fade-up">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-1 bg-orange-600 mr-4"></div>
+                <h2 class="text-3xl font-bold">Pizzas Feu de Bois</h2>
+            </div>
+            <div class="mb-8 rounded-xl overflow-hidden shadow-2xl h-48 md:h-64 relative group" data-aos="zoom-in">
+                <img src="pizza.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1574071318508-1cdbab80d002?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="Pizza">
+                <div class="absolute bottom-0 left-0 bg-black/70 px-4 py-2 text-sm text-orange-300"><i class="fas fa-fire mr-2"></i>Cuisson au feu de bois</div>
+            </div>
+            <p class="text-gray-400 text-sm mb-6 italic">Supplément : 2000 FCFA</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Margherita</h3><p class="text-sm text-gray-500">Sauce tomate, fromage mozzarella, olives noires, basilic</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">7.500</span><button class="add-btn" onclick="addToCart('Pizza Margherita', 7500)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Reine</h3><p class="text-sm text-gray-500">Sauce tomate, fromage mozzarella, jambon, champignons, olives noires, origan</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">8.500</span><button class="add-btn" onclick="addToCart('Pizza Reine', 8500)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Pizza Atun</h3><p class="text-sm text-gray-500">Sauce tomate, fromage, thon, olives noires, origan</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">8.000</span><button class="add-btn" onclick="addToCart('Pizza Atun', 8000)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Végétarienne</h3><p class="text-sm text-gray-500">Sauce tomate, fromage, poivron, lamelles d'oignon, maïs, champignons</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">8.500</span><button class="add-btn" onclick="addToCart('Pizza Végétarienne', 8500)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Pizza Chawarma <span class="text-xs bg-orange-600 text-white px-1 rounded ml-2">POP</span></h3><p class="text-sm text-gray-500">Sauce tomate, fromage, viande chawarma, tomate, persil, oignon, sauce blanche</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">9.500</span><button class="add-btn" onclick="addToCart('Pizza Chawarma', 9500)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">4 Fromages</h3><p class="text-sm text-gray-500">Sauce tomate, gruyère, édam, mozzarella, fromages</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">9.000</span><button class="add-btn" onclick="addToCart('Pizza 4 Fromages', 9000)">+</button></div></div>
+                </div>
+                <div class="space-y-4">
+                     <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">L'Orientale</h3><p class="text-sm text-gray-500">Sauce tomate, poulet, poivron, merguez, olives noires</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">9.000</span><button class="add-btn" onclick="addToCart('Pizza Orientale', 9000)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Mexicana</h3><p class="text-sm text-gray-500">Sauce tomate, fromage, lamelles de poulet épicé, maïs, poivron, oignon, olives noires, origan</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">9.000</span><button class="add-btn" onclick="addToCart('Pizza Mexicana', 9000)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Pizza Blanco</h3><p class="text-sm text-gray-500">Crème fraîche, jambon fumé, saucisse, champignon, poivron, origan</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">10.500</span><button class="add-btn" onclick="addToCart('Pizza Blanco', 10500)">+</button></div></div>
+                     <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Américain Grillada</h3><p class="text-sm text-gray-500">Sauce tomate, poulet, viande hachée, fromage, hot-dog, champignons, olives noires, BBQ, moutarde sucrée</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">10.500</span><button class="add-btn" onclick="addToCart('Américain Grillada', 10500)">+</button></div></div>
+                    <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Pizza Saumon</h3><p class="text-sm text-gray-500">Sauce crème fraîche, saumon fumé, tomate cerise, mozzarella</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">12.500</span><button class="add-btn" onclick="addToCart('Pizza Saumon', 12500)">+</button></div></div>
+                     <div class="flex justify-between items-baseline border-b border-gray-800 pb-2"><div class="pr-4"><h3 class="text-lg font-medium text-white">Mer à table</h3><p class="text-sm text-gray-500">Sauce tomate, fromage mozzarella, crevettes, calamar, moules, farcies à la sauce verte piment</p></div><div class="flex items-center"><span class="price-tag text-lg mr-2">10.500</span><button class="add-btn" onclick="addToCart('Pizza Mer à table', 10500)">+</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PATES -->
+        <section id="pates" class="mb-16 scroll-mt-24" data-aos="fade-up">
+             <div class="flex items-center mb-6">
+                <div class="w-12 h-1 bg-orange-400 mr-4"></div>
+                <h2 class="text-3xl font-bold">Pâtes</h2>
+            </div>
+            <div class="mb-8 rounded-xl overflow-hidden shadow-xl h-32 md:h-40 relative" data-aos="zoom-in">
+                 <img src="pates.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';" class="w-full h-full object-cover" alt="Nos Pâtes">
+            </div>
+             <div class="bg-zinc-800 p-6 rounded-xl">
+                 <ul class="space-y-4">
+                     <li class="flex justify-between border-b border-gray-700 pb-2"><span>Spaghetti Bolognaise</span> <div class="flex items-center"><span class="price-tag mr-2">8.000</span><button class="add-btn" onclick="addToCart('Spaghetti Bolognaise', 8000)">+</button></div></li>
+                     <li class="flex justify-between border-b border-gray-700 pb-2"><span>Carbonara Bœuf</span> <div class="flex items-center"><span class="price-tag mr-2">9.000</span><button class="add-btn" onclick="addToCart('Carbonara Bœuf', 9000)">+</button></div></li>
+                     <li class="flex justify-between border-b border-gray-700 pb-2"><span>Linguine Fruits de mer</span> <div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Linguine Fruits de mer', 10500)">+</button></div></li>
+                     <li class="flex justify-between border-b border-gray-700 pb-2"><span>Tagliatelle Poulet Crème</span> <div class="flex items-center"><span class="price-tag mr-2">9.000</span><button class="add-btn" onclick="addToCart('Tagliatelle Poulet Crème', 9000)">+</button></div></li>
+                 </ul>
+             </div>
+        </section>
+
+        <!-- 7. OCEAN -->
+        <section id="ocean" class="mb-16 scroll-mt-24" data-aos="fade-up">
+             <div class="flex items-center mb-6">
+                <div class="w-12 h-1 bg-blue-500 mr-4"></div>
+                <h2 class="text-3xl font-bold">L'Océan</h2>
+            </div>
+            <div class="mb-8 rounded-xl overflow-hidden shadow-2xl h-48 md:h-56 relative" data-aos="zoom-in">
+                 <img src="capitaine.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';" class="w-full h-full object-cover" alt="Filet de capitaine">
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Crevettes sautées aux légumes chinois</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Crevettes sautées', 10500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Calamar à la catalane</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Calamar catalane', 10500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Brochette de lotte</span><div class="flex items-center"><span class="price-tag mr-2">11.000</span><button class="add-btn" onclick="addToCart('Brochette de lotte', 11000)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Filet de capitaine beurre citronné</span><div class="flex items-center"><span class="price-tag mr-2">11.500</span><button class="add-btn" onclick="addToCart('Filet de capitaine', 11500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Brochette de gambas grillées</span><div class="flex items-center"><span class="price-tag mr-2">12.000</span><button class="add-btn" onclick="addToCart('Brochette de gambas', 12000)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Duo brochettes gambas et lotte</span><div class="flex items-center"><span class="price-tag mr-2">12.500</span><button class="add-btn" onclick="addToCart('Duo brochettes', 12500)">+</button></div></div>
+                </div>
+                <div class="space-y-4">
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Pavé de lotte / Sole</span><div class="flex items-center"><span class="price-tag mr-2">11.500</span><button class="add-btn" onclick="addToCart('Pavé de lotte/Sole', 11500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Gambas poêlées ail et persil</span><div class="flex items-center"><span class="price-tag mr-2">11.500</span><button class="add-btn" onclick="addToCart('Gambas poêlées', 11500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Dorade grillée</span><div class="flex items-center"><span class="price-tag mr-2">12.500</span><button class="add-btn" onclick="addToCart('Dorade grillée', 12500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Thiof grillé au feu de bois</span><div class="flex items-center"><span class="price-tag mr-2">15.000</span><button class="add-btn" onclick="addToCart('Thiof grillé', 15000)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Marmite du pêcheur</span><div class="flex items-center"><span class="price-tag mr-2">12.000</span><button class="add-btn" onclick="addToCart('Marmite du pêcheur', 12000)">+</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. VOLAILLES -->
+        <section id="volailles" class="mb-16 scroll-mt-24" data-aos="fade-up">
+            <div class="flex items-center mb-6">
+                <div class="w-12 h-1 bg-yellow-600 mr-4"></div>
+                <h2 class="text-3xl font-bold">Volaille</h2>
+            </div>
+            <div class="mb-8 rounded-xl overflow-hidden shadow-2xl h-48 md:h-64 relative group" data-aos="zoom-in">
+                <img src="volaille.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1598103442097-8b74394b95c6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="Plats de Volaille">
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Brochettes de poulet marinées</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Brochettes de poulet', 10500)">+</button></div></div>
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Émincé de poulet curry ananas</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Émincé poulet curry', 10500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Escalope de poulet plancha</span><div class="flex items-center"><span class="price-tag mr-2">10.000</span><button class="add-btn" onclick="addToCart('Escalope poulet plancha', 10000)">+</button></div></div>
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Demi-poulet rôti à l'ail</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Demi-poulet rôti', 10500)">+</button></div></div>
+                </div>
+                 <div class="space-y-4">
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Demi-poulet grillé feu de bois</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Demi-poulet grillé', 10500)">+</button></div></div>
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Escalope de poulet milanaise</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Escalope milanaise', 10500)">+</button></div></div>
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Suprême de volaille crème herbes</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Suprême volaille', 10500)">+</button></div></div>
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Pigeons grillés / Coquelet</span><div class="flex items-center"><span class="price-tag mr-2">10.000</span><button class="add-btn" onclick="addToCart('Pigeons grillés', 10000)">+</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. VIANDES FEU DE BOIS -->
+        <section id="viandes" class="mb-16 scroll-mt-24" data-aos="fade-up">
+            <div class="flex items-center mb-6 justify-end">
+                <h2 class="text-3xl font-bold text-right">Viandes Feu de Bois</h2>
+                <div class="w-12 h-1 bg-red-700 ml-4"></div>
+            </div>
+            <div class="mb-8 rounded-xl overflow-hidden shadow-2xl h-48 md:h-64 relative group" data-aos="zoom-in">
+                <img src="viande.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1558030006-450675393462?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80';" class="w-full h-full object-cover group-hover:scale-105 transition duration-700" alt="Viandes Grillées">
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Émincé de filet de bœuf</span><div class="flex items-center"><span class="price-tag mr-2">10.500</span><button class="add-btn" onclick="addToCart('Émincé bœuf', 10500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Brochettes de filet bœuf</span><div class="flex items-center"><span class="price-tag mr-2">11.500</span><button class="add-btn" onclick="addToCart('Brochettes bœuf', 11500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Escalope de veau milanaise</span><div class="flex items-center"><span class="price-tag mr-2">11.000</span><button class="add-btn" onclick="addToCart('Escalope veau', 11000)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Bœuf sauté façon thaï</span><div class="flex items-center"><span class="price-tag mr-2">12.500</span><button class="add-btn" onclick="addToCart('Bœuf thaï', 12500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>L'entrecôte argentine</span><div class="flex items-center"><span class="price-tag mr-2">12.500</span><button class="add-btn" onclick="addToCart('Entrecôte argentine', 12500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Côtelettes d'agneau grillées</span><div class="flex items-center"><span class="price-tag mr-2">13.500</span><button class="add-btn" onclick="addToCart('Côtelettes agneau', 13500)">+</button></div></div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Pavé de bœuf à la plancha</span><div class="flex items-center"><span class="price-tag mr-2">13.000</span><button class="add-btn" onclick="addToCart('Pavé bœuf', 13000)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Filet de bœuf à la plancha</span><div class="flex items-center"><span class="price-tag mr-2">13.500</span><button class="add-btn" onclick="addToCart('Filet bœuf', 13500)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span class="text-orange-400 font-bold">Mix Grillada</span><div class="flex items-center"><span class="price-tag mr-2">15.000</span><button class="add-btn" onclick="addToCart('Mix Grillada', 15000)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Dibi Grillada</span><div class="flex items-center"><span class="price-tag mr-2">11.000</span><button class="add-btn" onclick="addToCart('Dibi Grillada', 11000)">+</button></div></div>
+                    <div class="flex justify-between border-b border-gray-800 pb-1"><span>Méchoui</span><div class="flex items-center"><span class="price-tag mr-2">12.000</span><button class="add-btn" onclick="addToCart('Méchoui', 12000)">+</button></div></div>
+                     <div class="flex justify-between border-b border-gray-800 pb-1"><span>Soupe viande</span><div class="flex items-center"><span class="price-tag mr-2">10.000</span><button class="add-btn" onclick="addToCart('Soupe viande', 10000)">+</button></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. ENFANTS & EXTRAS -->
+        <div class="grid md:grid-cols-2 gap-8 mb-16">
+            <section id="kids" class="bg-blue-900/20 p-5 rounded-xl border border-blue-900/50" data-aos="flip-up">
+                 <div class="flex items-center mb-4">
+                    <h2 class="text-2xl font-bold text-blue-100">Little Boy</h2>
+                 </div>
+                 <img src="kid.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" class="w-full h-32 object-cover rounded-lg mb-4 opacity-80" alt="Menu Enfant">
+                 <div class="text-center">
+                     <p class="text-gray-300 mb-2">Menu Enfant</p>
+                     <p class="font-bold text-white mb-2">Choix : Nuggets / Wings / Tenders</p>
+                     <div class="flex justify-center items-center">
+                        <span class="price-tag text-2xl mr-3">5.500</span>
+                        <button class="add-btn bg-blue-500 hover:bg-blue-600" onclick="addToCart('Menu Enfant', 5500)">+</button>
+                     </div>
+                 </div>
+            </section>
+            <section id="extras" class="bg-zinc-800 p-5 rounded-xl" data-aos="flip-up" data-aos-delay="100">
+                 <h2 class="text-2xl font-bold mb-4 border-b border-gray-600 inline-block">Extras</h2>
+                 <ul class="space-y-4">
+                     <li class="flex flex-col"><div class="flex justify-between font-bold"><span>Garnitures</span> <div class="flex items-center"><span class="price-tag mr-2">2.000</span><button class="add-btn" onclick="addToCart('Garniture suppl.', 2000)">+</button></div></div><span class="text-xs text-gray-500">Frites, Attiéké, Riz blanc, Pommes sautées, Légumes sautés, Banane alloco</span></li>
+                     <li class="flex flex-col"><div class="flex justify-between font-bold"><span>Sauces</span> <div class="flex items-center"><span class="price-tag mr-2">1.500</span><button class="add-btn" onclick="addToCart('Sauce suppl.', 1500)">+</button></div></div><span class="text-xs text-gray-500">Poivre vert, Champignons, Roquefort, Crème aux herbes, Tomate provençale, Tartare</span></li>
+                 </ul>
+            </section>
+        </div>
+
+        <!-- 11. DOUCEUR -->
+        <section id="douceur" class="bg-zinc-800 p-5 rounded-xl mb-16" data-aos="fade-up">
+             <div class="flex items-center mb-4">
+                 <h2 class="text-2xl font-bold border-b border-pink-500 inline-block">Douceur</h2>
+             </div>
+             <img src="dessert.jpg" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1624353365286-3f8d62daad51?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80';" class="w-full h-40 object-cover rounded-lg mb-6" alt="Douceur">
+             <ul class="space-y-3">
+                 <li class="flex justify-between"><span>Gâteau Snickers</span> <div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Gâteau Snickers', 4500)">+</button></div></li>
+                 <li class="flex justify-between"><span>Boule de glace (2)</span> <div class="flex items-center"><span class="price-tag mr-2">3.500</span><button class="add-btn" onclick="addToCart('Glace 2 boules', 3500)">+</button></div></li>
+                 <li class="flex justify-between"><span>Brownie chocolat</span> <div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Brownie', 4500)">+</button></div></li>
+                 <li class="flex justify-between"><span>Banana split</span> <div class="flex items-center"><span class="price-tag mr-2">4.000</span><button class="add-btn" onclick="addToCart('Banana split', 4000)">+</button></div></li>
+                 <li class="flex justify-between"><span>Fruits de saison</span> <div class="flex items-center"><span class="price-tag mr-2">5.500</span><button class="add-btn" onclick="addToCart('Fruits saison', 5500)">+</button></div></li>
+                 <li class="flex justify-between"><span>Crêpes Nutella</span> <div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Crêpes Nutella', 4500)">+</button></div></li>
+                 <li class="flex justify-between"><span>Crêpes Oreo</span> <div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Crêpes Oreo', 4500)">+</button></div></li>
+                 <li class="flex justify-between"><span>Pain Perdu Chef</span> <div class="flex items-center"><span class="price-tag mr-2">4.500</span><button class="add-btn" onclick="addToCart('Pain Perdu', 4500)">+</button></div></li>
+                 <li class="flex justify-between"><span>Fondant Chocolat</span> <div class="flex items-center"><span class="price-tag mr-2">5.500</span><button class="add-btn" onclick="addToCart('Fondant Chocolat', 5500)">+</button></div></li>
+             </ul>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center text-gray-500 text-sm mt-12 pb-24 border-t border-gray-800 pt-8">
+            <img src="logo.jpg" onerror="this.onerror=null; this.style.display='none';" alt="Grillada" class="h-16 mx-auto mb-4 opacity-80">
+            <p class="mb-6">Taxes et services inclus. Prix en FCFA.</p>
+            <div class="flex justify-center items-center space-x-8">
+                <a href="https://www.facebook.com/profile.php?id=100086250493203" target="_blank" class="social-icon"><svg class="w-8 h-8 text-blue-600 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+                <a href="https://www.tiktok.com/@grilladadkr" target="_blank" class="social-icon"><svg class="w-8 h-8 text-pink-500 fill-current" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.35-1.17 1.09-1.07 1.93.03.58.01 1.16.44 1.57.48.46 1.16.55 1.79.45.69-.1 1.35-.32 1.98-.51 1.89-.57 3.21-2.29 3.23-4.28.01-4.46 0-8.92 0-13.38z"/></svg></a>
+                <a href="https://www.instagram.com/grilladadkr/" target="_blank" class="social-icon"><svg class="w-8 h-8 text-orange-500 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.069-4.85.069-3.204 0-3.584-.012-4.849-.069-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                <a href="https://wa.me/22100000000" target="_blank" class="social-icon"><svg class="w-8 h-8 text-green-500 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg></a>
+            </div>
+            <p class="mt-8 text-xs text-gray-700">© 2025 Grillada Restaurant</p>
+        </footer>
+
+    </div>
+
+    <!-- BOUTON FLOTTANT PANIER -->
+    <div id="cart-float" onclick="toggleCart()" class="fixed bottom-6 right-6 bg-orange-600 text-white rounded-full p-4 shadow-2xl cursor-pointer hover:bg-orange-700 transition z-50 flex items-center justify-center transform hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-orange-600 font-bold rounded-full w-6 h-6 flex items-center justify-center text-sm shadow-md border border-orange-200">0</span>
+    </div>
+
+    <!-- MODAL PANIER -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 hidden z-50 flex items-end sm:items-center justify-center transition-opacity duration-300">
+        <div class="bg-zinc-900 w-full sm:w-96 rounded-t-2xl sm:rounded-2xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="p-4 bg-zinc-800 border-b border-zinc-700 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-white"><i class="fas fa-shopping-cart mr-2"></i>Votre Commande</h3>
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-white p-2">✕</button>
+            </div>
+            
+            <div id="cart-items" class="p-4 overflow-y-auto flex-grow text-gray-300 text-sm space-y-2">
+                <!-- Les articles s'afficheront ici -->
+                <p class="text-center italic text-gray-500 py-4">Votre panier est vide.</p>
+            </div>
+
+            <div class="p-4 bg-zinc-800 border-t border-zinc-700">
+                <div class="flex justify-between items-center mb-4 text-lg font-bold text-white">
+                    <span>Total :</span>
+                    <span id="cart-total" class="text-orange-500">0 FCFA</span>
+                </div>
+                <button onclick="sendOrderToWhatsapp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                    Envoyer sur WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialisation de AOS (Animation on Scroll)
+        // C'est ce qui fait apparaître les éléments en douceur
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                once: true, // L'animation se joue une seule fois
+                offset: 50, // Déclenchement un peu avant
+                duration: 800, // Durée de l'animation en ms
+                easing: 'ease-out-cubic'
+            });
+        });
+
+        // --- LOGIQUE PANIER ---
+        let cart = [];
+        const restaurantPhone = "221773699709"; // NUMERO WHATSAPP DU RESTO
+
+        function closeMenu() {
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function addToCart(name, price) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.qty++;
+            } else {
+                cart.push({ name: name, price: price, qty: 1 });
+            }
+            updateCartUI();
+            
+            // Notification visuelle
+            Toastify({
+                text: name + " ajouté !",
+                duration: 2000,
+                gravity: "bottom",
+                position: "center",
+                style: { 
+                    background: "#d35400", 
+                    borderRadius: "50px",
+                    fontWeight: "bold",
+                    padding: "12px 24px",
+                    boxShadow: "0 4px 6px rgba(0,0,0,0.3)"
+                }
+            }).showToast();
+        }
+
+        function removeFromCart(name) {
+            const itemIndex = cart.findIndex(item => item.name === name);
+            if (itemIndex > -1) {
+                if (cart[itemIndex].qty > 1) {
+                    cart[itemIndex].qty--;
+                } else {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cart-count');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            // Compte Total
+            const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+            cartCount.innerText = totalQty;
+            
+            // Animation du bouton
+            if(totalQty > 0) {
+                document.getElementById('cart-float').classList.add('animate-bounce');
+                setTimeout(() => document.getElementById('cart-float').classList.remove('animate-bounce'), 1000);
+            }
+
+            // Liste des items
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-center italic text-gray-500 py-4">Votre panier est vide.</p>';
+                cartTotal.innerText = "0 FCFA";
+            } else {
+                let html = '';
+                let totalPrice = 0;
+                cart.forEach(item => {
+                    totalPrice += item.price * item.qty;
+                    html += `
+                        <div class="flex justify-between items-center bg-zinc-700/30 p-2 rounded mb-2">
+                            <div>
+                                <span class="font-bold text-white block">${item.name}</span>
+                                <span class="text-xs text-gray-400">${item.price} FCFA x ${item.qty}</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="removeFromCart('${item.name}')" class="text-red-400 font-bold px-2 hover:bg-red-900/30 rounded">-</button>
+                                <span class="text-white font-bold w-4 text-center">${item.qty}</span>
+                                <button onclick="addToCart('${item.name}', ${item.price})" class="text-green-400 font-bold px-2 hover:bg-green-900/30 rounded">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                cartItems.innerHTML = html;
+                cartTotal.innerText = totalPrice.toLocaleString('fr-FR') + " FCFA";
+            }
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                // Petit délai pour permettre l'animation CSS
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.classList.add('opacity-100');
+                });
+            } else {
+                modal.classList.remove('opacity-100');
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300); // Attendre la fin de l'anim
+            }
+        }
+
+        function sendOrderToWhatsapp() {
+            if (cart.length === 0) return;
+
+            let message = "Bonjour Grillada, je voudrais commander :\n\n";
+            let total = 0;
+
+            cart.forEach(item => {
+                message += `- ${item.qty}x ${item.name} (${item.price * item.qty} FCFA)\n`;
+                total += item.price * item.qty;
+            });
+
+            message += `\n*TOTAL : ${total.toLocaleString('fr-FR')} FCFA*`;
+            message += "\n\nMerci !";
+
+            const url = `https://wa.me/${restaurantPhone}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
